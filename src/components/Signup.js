@@ -1,10 +1,13 @@
 import "./style.css";
 import axios from "axios";
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import NavBar from './Navbar'
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
 const SignUp = () => {
+  let navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       password: "",
@@ -29,6 +32,7 @@ const SignUp = () => {
           .then((response) => {
               localStorage.setItem("token", response.data.token);
               alert(JSON.stringify("You hvae been registered! Please Login to continue!"));
+              navigate("/",{replace:true});
           })
           .catch(function (error) {
             alert(JSON.stringify("Mail has been already taken", null, 2));
@@ -38,6 +42,7 @@ const SignUp = () => {
   });
   return (
     <>
+      <NavBar/>
       <div className="container my-3">
         <div className="layer">
           <div className="center">

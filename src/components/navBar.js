@@ -1,45 +1,73 @@
-import React from "react";
-import {
-    BrowserRouter as Router,
-    Route,
-    Link,
-    Routes
-  } from "react-router-dom";
-import SignUp from "./Signup"
-import Login from "./Login"
+import React, { useState, useEffect } from "react";
+import { Navbar, Container, NavLink, NavDropdown, Nav } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-  function nav(){
+import { useNavigate } from "react-router-dom";
 
-    return (
-        <>
-        <Router>
-      <div>
-        <ul>
-          <button>
-            <Link to="/">Login</Link>
-          </button>
-          <button>
-            <Link to="/signUp">SignUp</Link>
-          </button>
-        </ul>
-
-        <hr />
-
-        {/*
-          A <Switch> looks through all its children <Route>
-          elements and renders the first one whose path
-          matches the current URL. Use a <Switch> any time
-          you have multiple routes, but you want only one
-          of them to render at a time
-        */}
-        <Routes>
-          <Route exact path="/" element={<Login/>}/>
-          <Route path="/signUp" element={<SignUp/>}/>
-        </Routes>
-      </div>
-    </Router>
-        </>
-    )
+const NavBar = () => {
+  let navigate = useNavigate();
+  const [user, setUser] = useState(false);
+  if (localStorage.getItem("token") !== undefined) {
+    console.log("Checking token!");
   }
 
-  export default nav;
+  useEffect(() => {
+    if (localStorage.getItem("token") !== "") {
+      setUser(true);
+    }
+  }, []);
+
+  return (
+    <>
+      <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+        <Container>
+          <Navbar.Brand to="home">React-Bootstrap</Navbar.Brand>
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Collapse id="responsive-navbar-nav">
+            <Nav className="me-auto">
+              <Nav.Link to="features">Features</Nav.Link>
+              <Nav.Link to="pricing">Pricing</Nav.Link>
+              <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
+                <NavDropdown.Item to="action/3.1">Action</NavDropdown.Item>
+                <NavDropdown.Item to="action/3.2">
+                  Another action
+                </NavDropdown.Item>
+                <NavDropdown.Item to="action/3.3">Something</NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item to="action/3.4">
+                  Separated link
+                </NavDropdown.Item>
+              </NavDropdown>
+            </Nav>
+            <Nav>
+              {!user && <button
+                className="btn btn-danger"
+                onClick={() => navigate("/", { replace: true })}
+              >
+                Login
+              </button>}
+              {!user && <button
+                className="btn btn-primary"
+                onClick={() => navigate("/signup", { replace: true })}
+              >
+                SignUp
+              </button>}
+              {user && (
+                <button
+                  className="btn btn-primary"
+                  onClick={() => {
+                      localStorage.setItem("token", "");
+                      navigate("/", { replace: true })}}
+                >
+                  Tyler
+                </button>
+              )}
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+    </>
+  );
+};
+
+export default NavBar;
